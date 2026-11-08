@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Título del visual</title>
+<script>if (window.top === window) document.documentElement.classList.add("standalone")</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap">
+<style>
+/* Reserva para abrir el fichero fuera del chat; dentro de T3 mandan las variables del tema (:where no pesa). */
+:where(:root){--background:#f6f7f9;--foreground:#15171c;--muted-foreground:#646a76;--card:#fff;--secondary:#eceef2;--border:#dde0e6;--success:#138a5a;--warning:#b8650f;--destructive:#cf3a5f;--chart-1:#2f6fde;--chart-3:#b8650f;--chart-5:#cf3a5f;--radius:12px;--font-sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:ui-monospace,"SF Mono",Menlo,monospace}
+@media (prefers-color-scheme:dark){:where(:root){--background:#0d0e11;--foreground:#eceef2;--muted-foreground:#9399a5;--card:#16181d;--secondary:#23262d;--border:#2a2e36;--success:#5fd3a0;--warning:#f0a65a;--destructive:#f3809c;--chart-1:#7ea8f5;--chart-3:#f0a65a;--chart-5:#f3809c}}
+html.standalone{color-scheme:light dark}html.standalone body{background:var(--background);color:var(--foreground);font-family:var(--font-sans);margin:0;padding:24px 16px}html.standalone .wrap{max-width:760px;margin:0 auto}
+html:not(.standalone),html:not(.standalone) body{overflow:hidden}
+*{box-sizing:border-box}
+:root{--muted:var(--muted-foreground);--line:var(--border);--hi:var(--chart-1);--gray:color-mix(in srgb,var(--muted-foreground) 40%,transparent);--display:"Instrument Serif",Georgia,serif}
+body{font-size:14.5px;line-height:1.5}
+.wrap{display:grid;gap:44px;padding:4px 0 8px}
+section{display:grid;gap:14px;min-width:0}
+h2{font:400 30px/1.08 var(--display);margin:0;text-wrap:balance}h2 em{font-style:normal;color:var(--hi)}
+.n{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+
+/* Serie y ranking: barras horizontales en gris; .hi resalta lo que importa */
+.bars{display:grid;gap:6px}
+.r{display:grid;grid-template-columns:minmax(20px,max-content) 1fr 52px;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.r .t{height:14px}.r i{display:block;height:100%;background:var(--gray);border-radius:2px;min-width:2px}
+.r.hi{color:var(--foreground)}.r.hi i{background:var(--hi)}.r b{font-weight:500;text-align:right}
+.rank .r{grid-template-columns:96px 1fr 52px}
+
+/* Reparto de un total: barra apilada + lista con valor y % */
+.stack{display:flex;gap:2px;height:12px;border-radius:3px;overflow:hidden}.stack i{display:block;width:var(--v);background:var(--tone)}
+.lst{display:grid}.li{display:grid;grid-template-columns:12px 1fr auto 44px;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}.li:first-child{border-top:0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--tone)}.li .p{color:var(--muted);text-align:right;font-size:12.5px}
+
+/* Antes y después */
+.delta{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px}
+.delta .a{font:400 40px/1 var(--display);color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.delta .b{font:400 56px/1 var(--display)}.delta .arrow{color:var(--muted);font-size:20px}
+.delta small{color:var(--success);font:500 13px var(--font-mono)}
+
+/* Tabla: filas y columnas siempre. Cada columna con un minicomponente distinto según su dato:
+   objetivo → anillo; evolución → total + sparkline; mezcla de dos → píldora bicolor; estado → punto. */
+.tbl{display:grid;grid-template-columns:minmax(70px,1.1fr) repeat(var(--cols),minmax(0,1fr));column-gap:10px;font-size:13px;align-items:center}
+.tbl>div{padding:9px 0;border-top:1px solid var(--line);min-width:0;overflow-wrap:anywhere;align-self:stretch;display:flex;align-items:center}
+.tbl .h{color:var(--muted);font-size:11.5px;border-top:0;padding-top:0;align-items:end}
+.tbl .sum{font-weight:600;border-top:2px solid var(--line)}
+.ring{display:inline-flex;align-items:center;gap:6px}.ring svg{width:28px;height:28px;flex:none;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:3.5}.ring .bg{stroke:var(--gray)}.ring .fg{stroke:var(--hi);stroke-linecap:round}
+.ring.done .fg{stroke:var(--success)}.ring b{font-weight:600}.ring small{color:var(--muted);font-size:11px}
+.spark{display:grid;gap:2px;width:100%}.spark b{font-weight:600}.spark svg{width:100%;max-width:90px;height:16px;overflow:visible}
+.spark polyline{fill:none;stroke:var(--hi);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.mix{display:grid;gap:3px;width:100%}.mix .pill{display:flex;height:8px;border-radius:4px;overflow:hidden;max-width:90px}.mix .pill i{display:block;width:var(--v);background:var(--tone)}
+.mix small{color:var(--muted);font-size:11px}
+.state{display:inline-flex;align-items:center;gap:6px}.state::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--tone)}
+.dash{color:var(--muted)}
+
+/* Estado agrupado: bloquea, pendiente, decidido */
+.groups{display:grid;gap:18px}
+.grp{display:grid;gap:2px}
+.grp h3{margin:0 0 4px;font:500 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--tone)}
+.grp ul{margin:0;padding:0;list-style:none;display:grid}
+.grp li{padding:8px 0 8px 14px;border-left:2px solid var(--tone);font-size:14px}
+.grp li+li{border-top:1px solid var(--line)}
+.who{color:var(--muted);font-size:12.5px}
+
+/* Pasos */
+.steps{display:grid;counter-reset:s}.sp{display:grid;grid-template-columns:28px 1fr;gap:12px;position:relative;padding-bottom:16px}
+.sp:not(:last-child)::after{content:"";position:absolute;left:13px;top:28px;bottom:0;width:1px;background:var(--line)}
+.sp::before{counter-increment:s;content:counter(s);width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font:500 12px var(--font-mono);color:var(--muted)}
+.sp.now::before{border-color:var(--hi);color:var(--hi)}
+.sp b{font-weight:500;display:block;padding-top:3px}.sp span{color:var(--muted);font-size:13px}
+
+@media (max-width:600px){
+  .rank .r{grid-template-columns:78px 1fr 48px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<!-- Una sección por idea. El h2 es la respuesta (sin subtítulo). Cada cifra sale una vez. Gris por defecto, color solo en lo que importa.
+     Borra las piezas que no uses. -->
+
+<!-- tipo: Serie en el tiempo -->
+<section>
+  <h2><em>73 PRs</em> esta semana</h2>
+  <div class="bars">
+    <div class="r"><span>L</span><div class="t"><i style="width:7%"></i></div><b class="n">2</b></div>
+    <div class="r hi"><span>J</span><div class="t"><i style="width:100%"></i></div><b class="n">27</b></div>
+    <div class="r"><span>V</span><div class="t"><i style="width:37%"></i></div><b class="n">10</b></div>
+  </div>
+</section>
+
+<!-- tipo: Reparto de un total -->
+<section>
+  <h2>El alquiler se lleva más de la mitad del gasto</h2>
+  <div class="stack"><i style="--v:59%;--tone:var(--hi)"></i><i style="--v:20%;--tone:color-mix(in srgb,var(--hi) 55%,transparent)"></i><i style="--v:21%;--tone:color-mix(in srgb,var(--hi) 25%,transparent)"></i></div>
+  <div class="lst">
+    <div class="li"><span class="dot" style="--tone:var(--hi)"></span><span>Alquiler</span><b class="n">950 €</b><span class="p n">59 %</span></div>
+    <div class="li"><span class="dot" style="--tone:color-mix(in srgb,var(--hi) 55%,transparent)"></span><span>Comida</span><b class="n">320 €</b><span class="p n">20 %</span></div>
+    <div class="li"><span class="dot" style="--tone:color-mix(in srgb,var(--hi) 25%,transparent)"></span><span>Resto</span><b class="n">335 €</b><span class="p n">21 %</span></div>
+  </div>
+</section>
+
+<!-- tipo: Ranking -->
+<section>
+  <h2>La API concentra casi todos los errores</h2>
+  <div class="bars rank">
+    <div class="r hi"><span>api</span><div class="t"><i style="width:100%"></i></div><b class="n">412</b></div>
+    <div class="r"><span>web</span><div class="t"><i style="width:31.5%"></i></div><b class="n">130</b></div>
+    <div class="r"><span>worker</span><div class="t"><i style="width:1.5%"></i></div><b class="n">6</b></div>
+  </div>
+</section>
+
+<!-- tipo: Antes y después -->
+<section>
+  <h2>El build tarda la mitad</h2>
+  <div class="delta"><span class="a n">8 min</span><span class="arrow">→</span><span class="b n">4 min</span><small>−50 % con caché</small></div>
+</section>
+
+<!-- tipo: Comparación (tabla; cada columna con un minicomponente distinto según su dato) -->
+<section>
+  <h2>Solo un creador ha cumplido su objetivo de vídeos</h2>
+  <div class="tbl" style="--cols:3">
+    <div class="h"></div><div class="h">Vídeos</div><div class="h">Views</div><div class="h">TikTok / IG</div>
+    <div>Creador A</div><div><span class="ring done"><svg viewBox="0 0 28 28"><circle class="bg" cx="14" cy="14" r="11"/><circle class="fg" cx="14" cy="14" r="11" stroke-dasharray="69.1 69.1"/></svg><span><b class="n">10</b><small>/8</small></span></span></div><div><span class="spark"><b class="n">11,8 mil</b><svg viewBox="0 0 60 16" preserveAspectRatio="none"><polyline points="0,16.0 10,14.8 20,14.8 30,13.5 40,8.5 50,2.2 60,1.0"/></svg></span></div><div><span class="mix"><span class="pill"><i style="--v:8%;--tone:var(--foreground)"></i><i style="--v:92%;--tone:var(--chart-5)"></i></span><small>92 % IG</small></span></div>
+    <div>Creador B</div><div><span class="ring"><svg viewBox="0 0 28 28"><circle class="bg" cx="14" cy="14" r="11"/><circle class="fg" cx="14" cy="14" r="11" stroke-dasharray="22.1 69.1"/></svg><span><b class="n">8</b><small>/25</small></span></span></div><div><span class="spark"><b class="n">196,5 mil</b><svg viewBox="0 0 60 16" preserveAspectRatio="none"><polyline points="0,15.6 10,12.9 20,9.1 30,6.8 40,4.5 50,2.2 60,1.0"/></svg></span></div><div><span class="mix"><span class="pill"><i style="--v:27%;--tone:var(--foreground)"></i><i style="--v:73%;--tone:var(--chart-5)"></i></span><small>73 % IG</small></span></div>
+    <div>Creador C</div><div><span class="ring"><svg viewBox="0 0 28 28"><circle class="bg" cx="14" cy="14" r="11"/><circle class="fg" cx="14" cy="14" r="11" stroke-dasharray="0.0 69.1"/></svg><span><b class="n">0</b><small>/8</small></span></span></div><div><span class="state" style="--tone:var(--warning)">sin vídeos</span></div><div><span class="dash">—</span></div>
+    <div class="sum">Total</div><div class="sum n">18</div><div class="sum n">208,3 mil</div><div class="sum n">74 % IG</div>
+  </div>
+</section>
+
+<!-- tipo: Estado (agrupado: bloquea, pendiente, decidido; omite los grupos vacíos) -->
+<section>
+  <h2>Una decisión bloquea el lanzamiento</h2>
+  <div class="groups">
+    <div class="grp" style="--tone:var(--destructive)"><h3>Bloquea · 1</h3><ul><li>Elegir proveedor de pagos <span class="who">· producto</span></li></ul></div>
+    <div class="grp" style="--tone:var(--warning)"><h3>Pendiente · 1</h3><ul><li>Revisar los textos legales <span class="who">· legal</span></li></ul></div>
+    <div class="grp" style="--tone:var(--success)"><h3>Decidido · 2</h3><ul><li>Lanzar en beta cerrada</li><li>Mantener el precio actual</li></ul></div>
+  </div>
+</section>
+
+<!-- tipo: Plan o pasos (.now marca el paso actual) -->
+<section>
+  <h2>El despliegue va por el segundo paso</h2>
+  <div class="steps">
+    <div class="sp"><div><b>Build</b><span>terminado</span></div></div>
+    <div class="sp now"><div><b>Migraciones de base de datos</b><span>en curso</span></div></div>
+    <div class="sp"><div><b>Tráfico al 100 %</b><span>cuando acaben las migraciones</span></div></div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

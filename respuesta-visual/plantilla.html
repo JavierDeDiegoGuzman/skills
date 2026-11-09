@@ -8,18 +8,29 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap">
 <style>
 /* Reserva para abrir el fichero fuera del chat; dentro de T3 mandan las variables del tema (:where no pesa). */
-:where(:root){--background:#f6f7f9;--foreground:#15171c;--muted-foreground:#646a76;--card:#fff;--secondary:#eceef2;--border:#dde0e6;--success:#138a5a;--warning:#b8650f;--destructive:#cf3a5f;--chart-1:#2f6fde;--chart-3:#b8650f;--chart-5:#cf3a5f;--radius:12px;--font-sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:ui-monospace,"SF Mono",Menlo,monospace}
-@media (prefers-color-scheme:dark){:where(:root){--background:#0d0e11;--foreground:#eceef2;--muted-foreground:#9399a5;--card:#16181d;--secondary:#23262d;--border:#2a2e36;--success:#5fd3a0;--warning:#f0a65a;--destructive:#f3809c;--chart-1:#7ea8f5;--chart-3:#f0a65a;--chart-5:#f3809c}}
+:where(:root){--background:#f6f7f9;--foreground:#15171c;--muted-foreground:#646a76;--card:#fff;--secondary:#eceef2;--border:#dde0e6;--primary:#2f6fde;--accent:#eceef2;--accent-surface:#e8effc;--info:#2f6fde;--success:#138a5a;--warning:#b8650f;--warning-surface:#fbf0e3;--destructive:#cf3a5f;--destructive-surface:#fbe8ed;--chart-1:#2f6fde;--chart-2:#138a5a;--chart-3:#b8650f;--chart-4:#7a55d6;--chart-5:#cf3a5f;--chart-6:#1b8fa8;--radius:12px;--font-sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:ui-monospace,"SF Mono",Menlo,monospace}
+@media (prefers-color-scheme:dark){:where(:root){--background:#0d0e11;--foreground:#eceef2;--muted-foreground:#9399a5;--card:#16181d;--secondary:#23262d;--border:#2a2e36;--primary:#7ea8f5;--accent:#23262d;--accent-surface:#1a2233;--info:#7ea8f5;--success:#5fd3a0;--warning:#f0a65a;--warning-surface:#2a2016;--destructive:#f3809c;--destructive-surface:#2c1820;--chart-1:#7ea8f5;--chart-2:#5fd3a0;--chart-3:#f0a65a;--chart-4:#b293f5;--chart-5:#f3809c;--chart-6:#7fd4e8}}
 html.standalone{color-scheme:light dark}html.standalone body{background:var(--background);color:var(--foreground);font-family:var(--font-sans);margin:0;padding:24px 16px}html.standalone .wrap{max-width:760px;margin:0 auto}
 html:not(.standalone),html:not(.standalone) body{overflow:hidden}
 *{box-sizing:border-box}
-:root{--muted:var(--muted-foreground);--line:var(--border);--hi:var(--chart-1);--gray:color-mix(in srgb,var(--muted-foreground) 40%,transparent);--display:"Instrument Serif",Georgia,serif}
+:root{--muted:var(--muted-foreground);--line:var(--border);--hi:var(--chart-1);--gray:color-mix(in srgb,var(--muted-foreground) 40%,transparent);--soft:color-mix(in srgb,var(--muted-foreground) 9%,transparent);--display:"Instrument Serif",Georgia,serif}
 body{font-size:14.5px;line-height:1.5}
 .wrap{display:grid;gap:44px;padding:4px 0 8px}
-section{display:grid;gap:14px;min-width:0}
+section{display:grid;gap:14px;min-width:0;align-content:start}
 h2{font:400 30px/1.08 var(--display);margin:0;text-wrap:balance}h2 em{font-style:normal;color:var(--hi)}
 .n{font-variant-numeric:tabular-nums}
 .muted{color:var(--muted)}
+
+/* Veredicto: abre la respuesta a una pregunta de sí o no. --tone según el sentido (success, warning, destructive). */
+.verdict{display:flex;align-items:baseline;gap:6px 16px;flex-wrap:wrap}
+.verdict .v{font:400 64px/.9 var(--display);color:var(--tone)}
+.verdict h2{flex:1 1 220px}
+
+/* Cifras clave: 2 a 4 números. .hi marca la que importa. */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:4px;align-content:start}
+.kpi .v{font:400 38px/1 var(--display)}.kpi .l{font-size:12.5px;color:var(--muted);line-height:1.35}
+.kpi.hi{border-color:color-mix(in srgb,var(--tone,var(--hi)) 45%,var(--line))}.kpi.hi .v{color:var(--tone,var(--hi))}
 
 /* Serie y ranking: barras horizontales en gris; .hi resalta lo que importa */
 .bars{display:grid;gap:6px}
@@ -33,11 +44,17 @@ h2{font:400 30px/1.08 var(--display);margin:0;text-wrap:balance}h2 em{font-style
 .lst{display:grid}.li{display:grid;grid-template-columns:12px 1fr auto 44px;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}.li:first-child{border-top:0}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--tone)}.li .p{color:var(--muted);text-align:right;font-size:12.5px}
 
-/* Antes y después */
+/* Antes y después de una cifra */
 .delta{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px}
 .delta .a{font:400 40px/1 var(--display);color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
 .delta .b{font:400 56px/1 var(--display)}.delta .arrow{color:var(--muted);font-size:20px}
 .delta small{color:var(--success);font:500 13px var(--font-mono)}
+
+/* Cambio de textos: dónde, antes tachado y después */
+.copy{display:grid}
+.cp{display:grid;grid-template-columns:minmax(80px,.7fr) minmax(0,1fr) minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:13.5px;align-items:start}
+.cp:first-child{border-top:0}.cp .w{color:var(--muted);font-size:12.5px}
+.cp .a{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--gray)}.cp .b{font-weight:500}
 
 /* Tabla: filas y columnas siempre. Cada columna con un minicomponente distinto según su dato:
    objetivo → anillo; evolución → total + sparkline; mezcla de dos → píldora bicolor; estado → punto. */
@@ -55,6 +72,47 @@ h2{font:400 30px/1.08 var(--display);margin:0;text-wrap:balance}h2 em{font-style
 .state{display:inline-flex;align-items:center;gap:6px}.state::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--tone)}
 .dash{color:var(--muted)}
 
+/* Flujo: cajas y flechas; .hi marca el paso del que se habla. En móvil va en vertical. */
+.flow{display:flex;align-items:stretch;gap:8px}
+.node{flex:1 1 0;min-width:0;border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;display:grid;gap:2px;align-content:start;font-size:13px}
+.node b{font-weight:600}.node span{color:var(--muted);font-size:12px}
+.node.hi{border-color:var(--hi);background:color-mix(in srgb,var(--hi) 10%,transparent)}
+.flow .to{align-self:center;color:var(--muted);flex:none}
+
+/* Línea de tiempo: .done hecho, .now en curso, sin clase pendiente */
+.time{display:grid}
+.ev{display:grid;grid-template-columns:62px 14px 1fr;gap:10px;position:relative;padding-bottom:14px;font-size:13.5px}
+.ev time{color:var(--muted);font:500 12px var(--font-mono);padding-top:1px;text-align:right}
+.ev i{width:11px;height:11px;border-radius:50%;border:2px solid var(--gray);background:var(--background,transparent);margin-top:4px;position:relative;z-index:1}
+.ev:not(:last-child)::after{content:"";position:absolute;left:78px;top:16px;bottom:0;width:2px;background:var(--line)}
+.ev.done i{border-color:var(--success);background:var(--success)}
+.ev.now i{border-color:var(--hi);background:var(--hi);box-shadow:0 0 0 4px color-mix(in srgb,var(--hi) 22%,transparent)}
+.ev span{color:var(--muted);font-size:12.5px;display:block}
+
+/* Embudo: barra por paso con la conversión respecto al anterior */
+.funnel{display:grid;gap:8px}
+.fs{display:grid;grid-template-columns:110px 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.fs .t{display:flex;justify-content:center}.fs i{display:block;height:22px;width:var(--v);border-radius:4px;background:color-mix(in srgb,var(--hi) var(--o,100%),transparent)}
+.fs b{text-align:right;font-weight:500}.fs small{display:block;color:var(--muted);font-size:11px;text-align:right}
+
+/* Matriz 2×2: ejes con nombre; el cuadrante bueno con .hi */
+.matrix{display:grid;grid-template-columns:18px 1fr 1fr;grid-template-rows:1fr 1fr 18px;gap:6px}
+.matrix .q{border-radius:var(--radius);background:var(--soft);padding:10px 12px;font-size:12.5px;display:grid;gap:4px;align-content:start;min-height:84px}
+.matrix .q h4{margin:0;font:500 10.5px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.matrix .q.hi{background:color-mix(in srgb,var(--hi) 12%,transparent)}.matrix .q.hi h4{color:var(--hi)}
+.matrix .ax{color:var(--muted);font-size:11px;display:grid;place-items:center}
+.matrix .ay{writing-mode:vertical-rl;transform:rotate(180deg);grid-row:1/3}
+.matrix .ax-x{grid-column:2/4}
+
+/* Opciones: tarjetas lado a lado; .rec es la recomendada. La pregunta va en el texto del mensaje. */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;align-items:start}
+.opt{border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:6px;align-content:start}
+.opt h3{margin:0;font-size:14px;font-weight:600;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.opt .tag{font:500 10.5px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--success)}
+.opt p{margin:0;font-size:13px;color:var(--muted)}
+.opt ul{margin:0;padding:0 0 0 16px;font-size:12.5px;display:grid;gap:2px}
+.opt.rec{border-color:var(--success);box-shadow:0 0 0 1px var(--success)}
+
 /* Estado agrupado: bloquea, pendiente, decidido */
 .groups{display:grid;gap:18px}
 .grp{display:grid;gap:2px}
@@ -71,15 +129,41 @@ h2{font:400 30px/1.08 var(--display);margin:0;text-wrap:balance}h2 em{font-style
 .sp.now::before{border-color:var(--hi);color:var(--hi)}
 .sp b{font-weight:500;display:block;padding-top:3px}.sp span{color:var(--muted);font-size:13px}
 
+/* Maqueta pulsable: escenario + botón que repite la animación. Respeta prefers-reduced-motion. */
+.stage{border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;justify-items:center}
+.stage .box{width:120px;height:72px;border-radius:10px;background:var(--hi)}
+.stage.play .box{animation:enter .6s cubic-bezier(.22,1,.36,1) both}
+@keyframes enter{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.stage.play .box{animation:none}}
+.replay{font:500 12.5px var(--font-sans);color:var(--foreground);background:transparent;border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+
 @media (max-width:600px){
   .rank .r{grid-template-columns:78px 1fr 48px}
+  .flow{flex-direction:column}.flow .to{transform:rotate(90deg)}
+  .cp{grid-template-columns:1fr 1fr}.cp .w{grid-column:1/-1}
+  .fs{grid-template-columns:82px 1fr 56px}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-<!-- Una sección por idea. El h2 es la respuesta (sin subtítulo). Cada cifra sale una vez. Gris por defecto, color solo en lo que importa.
-     Borra las piezas que no uses. -->
+<!-- Una sección por idea y 3 como mucho. El h2 es la respuesta (sin subtítulo). Cada cifra sale una vez.
+     Gris por defecto, color solo en lo que importa. Borra las piezas que no uses. -->
+
+<!-- tipo: Veredicto (pregunta de sí o no; --tone: success, warning o destructive) -->
+<section>
+  <div class="verdict" style="--tone:var(--success)"><span class="v">Sí</span><h2>Todos los correos salen en el idioma de la cuenta, <em>menos uno</em></h2></div>
+</section>
+
+<!-- tipo: Cifras clave (2 a 4) -->
+<section>
+  <h2>La beta va mejor de lo previsto</h2>
+  <div class="kpis">
+    <div class="kpi"><span class="v n">1.240</span><span class="l">usuarios activos esta semana</span></div>
+    <div class="kpi hi" style="--tone:var(--success)"><span class="v n">38 %</span><span class="l">vuelven al día siguiente (objetivo: 30 %)</span></div>
+    <div class="kpi"><span class="v n">4</span><span class="l">errores abiertos, ninguno grave</span></div>
+  </div>
+</section>
 
 <!-- tipo: Serie en el tiempo -->
 <section>
@@ -112,10 +196,19 @@ h2{font:400 30px/1.08 var(--display);margin:0;text-wrap:balance}h2 em{font-style
   </div>
 </section>
 
-<!-- tipo: Antes y después -->
+<!-- tipo: Antes y después de una cifra -->
 <section>
   <h2>El build tarda la mitad</h2>
   <div class="delta"><span class="a n">8 min</span><span class="arrow">→</span><span class="b n">4 min</span><small>−50 % con caché</small></div>
+</section>
+
+<!-- tipo: Cambio de textos -->
+<section>
+  <h2>Los botones dicen qué ganas, no adónde vas</h2>
+  <div class="copy">
+    <div class="cp"><span class="w">Botón del plan</span><span class="a">Ir al plan Pro</span><span class="b">Desbloquear todo</span></div>
+    <div class="cp"><span class="w">Tras pagar</span><span class="a">Pago completado</span><span class="b">Ya tienes Pro: empieza por aquí</span></div>
+  </div>
 </section>
 
 <!-- tipo: Comparación (tabla; cada columna con un minicomponente distinto según su dato) -->
@@ -127,6 +220,60 @@ h2{font:400 30px/1.08 var(--display);margin:0;text-wrap:balance}h2 em{font-style
     <div>Creador B</div><div><span class="ring"><svg viewBox="0 0 28 28"><circle class="bg" cx="14" cy="14" r="11"/><circle class="fg" cx="14" cy="14" r="11" stroke-dasharray="22.1 69.1"/></svg><span><b class="n">8</b><small>/25</small></span></span></div><div><span class="spark"><b class="n">196,5 mil</b><svg viewBox="0 0 60 16" preserveAspectRatio="none"><polyline points="0,15.6 10,12.9 20,9.1 30,6.8 40,4.5 50,2.2 60,1.0"/></svg></span></div><div><span class="mix"><span class="pill"><i style="--v:27%;--tone:var(--foreground)"></i><i style="--v:73%;--tone:var(--chart-5)"></i></span><small>73 % IG</small></span></div>
     <div>Creador C</div><div><span class="ring"><svg viewBox="0 0 28 28"><circle class="bg" cx="14" cy="14" r="11"/><circle class="fg" cx="14" cy="14" r="11" stroke-dasharray="0.0 69.1"/></svg><span><b class="n">0</b><small>/8</small></span></span></div><div><span class="state" style="--tone:var(--warning)">sin vídeos</span></div><div><span class="dash">—</span></div>
     <div class="sum">Total</div><div class="sum n">18</div><div class="sum n">208,3 mil</div><div class="sum n">74 % IG</div>
+  </div>
+</section>
+
+<!-- tipo: Flujo (cómo funciona algo; .hi en el paso del que se habla) -->
+<section>
+  <h2>El aviso se decide en el servidor, <em>no en el móvil</em></h2>
+  <div class="flow">
+    <div class="node"><b>Abres la app</b><span>pide tu estado</span></div><span class="to">→</span>
+    <div class="node hi"><b>El servidor decide</b><span>cuenta anterior al 8/11 y aviso sin ver</span></div><span class="to">→</span>
+    <div class="node"><b>Lo ves una vez</b><span>se marca en tu cuenta</span></div>
+  </div>
+</section>
+
+<!-- tipo: Línea de tiempo (.done hecho, .now en curso) -->
+<section>
+  <h2>El lanzamiento va por la beta cerrada</h2>
+  <div class="time">
+    <div class="ev done"><time>3 nov</time><i></i><div>Diseño cerrado</div></div>
+    <div class="ev now"><time>10 nov</time><i></i><div>Beta cerrada<span>40 personas, hasta el viernes</span></div></div>
+    <div class="ev"><time>24 nov</time><i></i><div>Lanzamiento público</div></div>
+  </div>
+</section>
+
+<!-- tipo: Embudo (--v ancho relativo al primer paso; --o opacidad) -->
+<section>
+  <h2>Se pierde la mitad <em>entre el registro y el primer uso</em></h2>
+  <div class="funnel">
+    <div class="fs"><span>Visitas</span><div class="t"><i style="--v:100%"></i></div><b class="n">10.000</b></div>
+    <div class="fs"><span>Registro</span><div class="t"><i style="--v:22%;--o:80%"></i></div><b class="n">2.200<small>22 %</small></b></div>
+    <div class="fs"><span>Primer uso</span><div class="t"><i style="--v:11%;--o:60%"></i></div><b class="n">1.100<small>50 %</small></b></div>
+    <div class="fs"><span>Pago</span><div class="t"><i style="--v:2%;--o:45%"></i></div><b class="n">190<small>17 %</small></b></div>
+  </div>
+</section>
+
+<!-- tipo: Matriz 2×2 (el cuadrante bueno con .hi) -->
+<section>
+  <h2>Dos arreglos dan mucho por poco</h2>
+  <div class="matrix">
+    <span class="ax ay">impacto →</span>
+    <div class="q hi"><h4>Hazlo ya</h4>Volumen de tests · Idioma al registrarse</div>
+    <div class="q"><h4>Planifícalo</h4>Leer PDFs largos enteros</div>
+    <div class="q"><h4>Si sobra tiempo</h4>Textos en inglés</div>
+    <div class="q"><h4>Descártalo</h4>Rehacer el visor</div>
+    <span></span><span class="ax ax-x">esfuerzo →</span>
+  </div>
+</section>
+
+<!-- tipo: Opciones (la recomendada con .rec; la pregunta va en el texto del mensaje) -->
+<section>
+  <h2>Tres formas de mostrar el límite; <em>B</em> es la más clara</h2>
+  <div class="opts">
+    <div class="opt"><h3>A · Contador</h3><p>«3 de 4» junto al título.</p><ul><li>Mínimo cambio</li><li>Pasa desapercibido</li></ul></div>
+    <div class="opt rec"><h3>B · Casillas <span class="tag">recomendada</span></h3><p>Una casilla por carpeta, llenas y vacías.</p><ul><li>Se entiende de un vistazo</li><li>Ocupa una línea más</li></ul></div>
+    <div class="opt"><h3>C · Barra</h3><p>Barra de progreso hasta el límite.</p><ul><li>Familiar</li><li>Parece una descarga</li></ul></div>
   </div>
 </section>
 
@@ -148,6 +295,12 @@ h2{font:400 30px/1.08 var(--display);margin:0;text-wrap:balance}h2 em{font-style
     <div class="sp now"><div><b>Migraciones de base de datos</b><span>en curso</span></div></div>
     <div class="sp"><div><b>Tráfico al 100 %</b><span>cuando acaben las migraciones</span></div></div>
   </div>
+</section>
+
+<!-- tipo: Maqueta pulsable (sustituye .box por la pieza real y su animación) -->
+<section>
+  <h2>La tarjeta entra subiendo y se asienta</h2>
+  <div class="stage play" id="stage"><div class="box"></div><button class="replay" onclick="const s=document.getElementById('stage');s.classList.remove('play');void s.offsetWidth;s.classList.add('play')">↻ Repetir</button></div>
 </section>
 
 </div>

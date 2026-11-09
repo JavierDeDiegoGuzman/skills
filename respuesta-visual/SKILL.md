@@ -5,6 +5,17 @@ description: Elegir y montar el formato de cada respuesta en el chat de T3 (text
 
 # Respuesta visual
 
+## 0. Escribe en ASD-STE100
+
+Todo el texto (mensaje y visual) va en inglés técnico simplificado ASD-STE100:
+
+- Frases cortas: 20 palabras como mucho en instrucciones y 25 en descripciones. Párrafos de 6 frases como mucho.
+- Una instrucción por frase, en imperativo: «Run `gcloud auth login`.», no «You should probably run…».
+- Voz activa y presente o pasado simple. Nada de formas en -ing como verbo ni de condicionales.
+- Palabras sencillas, con un solo significado cada una: «use», no «utilize»; «start», no «initiate». Siempre la misma palabra para la misma cosa.
+- Nombres técnicos tal cual: comandos, PRs, rutas, nombres de ramas.
+- Las respuestas literales que el usuario debe copiar van en su idioma, entre «».
+
 ## 1. Elige el medio más ligero que baste
 
 Sube por la escalera solo mientras el peldaño de abajo se quede corto:

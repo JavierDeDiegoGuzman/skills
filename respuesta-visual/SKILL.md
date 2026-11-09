@@ -66,3 +66,11 @@ El visual sale encima del mensaje. El texto lleva solo lo que el visual no tiene
 3. Lo que queda en marcha y las fuentes o salvedades.
 4. Enlaces a PRs y `archivo:línea`.
 5. Al final, la ruta del visual como enlace.
+
+Cómo pedir lo que necesitas (punto 2):
+
+- Una lista numerada, de lo más rápido o lo que más bloquea a lo que menos.
+- Cada punto empieza por un título corto en negrita y dice una acción concreta: qué hacer, dónde y qué devolverte.
+- Si hay que elegir, pon la respuesta literal entre «» para que baste con copiarla: «adelante», «HA» o «básico». Si son varias, van en subpuntos.
+- Enlaza hilos, PRs y documentos con un nombre corto, nunca con la URL entera: `[hilo de UGC](t3-thread://…)`, `[#800](https://github.com/…/pull/800)`.
+- Si nada queda en marcha, no lo anuncies.

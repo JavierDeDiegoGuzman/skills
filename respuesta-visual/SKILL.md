@@ -5,16 +5,24 @@ description: Elegir y montar el formato de cada respuesta en el chat de T3 (text
 
 # Respuesta visual
 
-## 0. Escribe en ASD-STE100
+## 0. Escribe en el idioma de la persona, en lenguaje controlado
 
-Todo el texto (mensaje y visual) va en inglés técnico simplificado ASD-STE100:
+Todo el texto (mensaje y visual) va en el idioma en que te escribe la persona, con el estándar de lenguaje claro de ese idioma:
+
+- **Inglés:** inglés técnico simplificado ASD-STE100.
+- **Español:** lenguaje claro según la norma UNE-ISO 24495-1.
+- **Otro idioma:** la norma ISO 24495-1 (lenguaje claro) o el estándar local equivalente.
+
+Sea cual sea el idioma, aplica estas reglas:
 
 - Frases cortas: 20 palabras como mucho en instrucciones y 25 en descripciones. Párrafos de 6 frases como mucho.
-- Una instrucción por frase, en imperativo: «Run `gcloud auth login`.», no «You should probably run…».
-- Voz activa y presente o pasado simple. Nada de formas en -ing como verbo ni de condicionales.
-- Palabras sencillas, con un solo significado cada una: «use», no «utilize»; «start», no «initiate». Siempre la misma palabra para la misma cosa.
+- Una instrucción por frase, en imperativo: «Ejecuta `gcloud auth login`.», no «Deberías ejecutar…»; «Run `gcloud auth login`.», no «You should probably run…».
+- Voz activa y tiempos simples. Sin condicionales ni rodeos: en español, nada de gerundios encadenados ni de «se» impersonal; en inglés, nada de formas en -ing como verbo.
+- Verbos en vez de sustantivos: «instala», no «realiza la instalación»; «use», no «utilize».
+- Palabras sencillas, con un solo significado cada una. Siempre la misma palabra para la misma cosa.
 - Nombres técnicos tal cual: comandos, PRs, rutas, nombres de ramas.
-- Las respuestas literales que el usuario debe copiar van en su idioma, entre «».
+- Las respuestas literales que la persona debe copiar van en su idioma, entre «».
+- En el visual, pon `lang` del `<html>` al idioma de la respuesta.
 
 ## 1. Elige el medio más ligero que baste
 

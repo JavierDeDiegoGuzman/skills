@@ -24,6 +24,12 @@ Sea cual sea el idioma, aplica estas reglas:
 - Las respuestas literales que la persona debe copiar van en su idioma, entre «».
 - En el visual, pon `lang` del `<html>` al idioma de la respuesta.
 
+El idioma y el tono los marca la persona, no la skill:
+
+- **Idioma:** el de sus mensajes, aunque los resultados de las herramientas, el código o los nombres de fichero estén en otro. Si cambia de idioma a mitad de conversación, cambia tú también.
+- **Tono:** sigue el de la conversación (tuteo o usted, cercano o formal). La norma fija la claridad de las frases, no la frialdad: no pases a un tono de manual si la persona habla en coloquial.
+- **Al grano:** lo clave primero y sin relleno. Adaptar el tono no alarga la respuesta.
+
 ## 1. Elige el medio más ligero que baste
 
 Sube por la escalera solo mientras el peldaño de abajo se quede corto:
